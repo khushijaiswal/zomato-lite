@@ -97,7 +97,7 @@ exports.loginCustomer = asyncHandler(async (req, res) => {
     }
     // send OTP
     const otp = generateOTP()
-    await Admin.findByIdAndUpdate(result._id, { otp, otpSendOn: Date.now() })
+    await Customer.findByIdAndUpdate(result._id, { otp, otpSendOn: Date.now() })
     // await sendSMS({ number: result.mobile, message: `your otp is ${otp}` })
     await sendEmail({
         message: `<h1>Your OTP is ${otp}</h1>`,
