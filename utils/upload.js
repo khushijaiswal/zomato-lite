@@ -10,6 +10,7 @@ const resturantUpload = multer({ storage }).fields([
 ])
 
 const menuUpload = multer({ storage }).array("image")
+const updateMenuUpload = multer({ storage }).single("image")
 
 
-module.exports = { resturantUpload, menuUpload }
+module.exports = { resturantUpload, menuUpload, updateMenuUpload }

@@ -1,5 +1,5 @@
 const asynchandler = require("express-async-handler")
-const { resturantUpload, menuUpload } = require("../utils/upload")
+const { resturantUpload, menuUpload, updateMenuUpload } = require("../utils/upload")
 const validator = require("validator")
 const { checkEmpty } = require("../utils/checkEmpty")
 const cloud = require("../utils/cloudinary")
@@ -92,8 +92,29 @@ exports.deleteMenu = asynchandler(async (req, res) => {
 })
 
 exports.updateMenu = asynchandler(async (req, res) => {
-    // const result=await Menu.findByIdAndUpdate(req.params.mid)
-    res.json({ message: "menu delete success" })
+    updateMenuUpload(req, res, async (err) => {
+        if (err) {
+            console.log(err)
+            return res.status(400).json({ message: "multer error" })
+
+        }
+        console.log(req.file);
+
+        if (req.file) {
+            const result = await Menu.findById(req.params.mid)
+
+            //delete old image
+            await cloud.uploader.destroy(path.basename(result.image, path.extname(result.image)))
+            //upload new image
+            const { secure_url } = await cloud.uploader.upload(req.file.path)
+            //update database
+            await Menu.findByIdAndUpdate(req.params.mid, { ...req.body, image: secure_url })
+            res.json({ message: "menu update success" })
+        } else {
+            await Menu.findByIdAndUpdate(req.params.mid, { ...req.body })
+            res.json({ message: "menu update success" })
+        }
+    })
 })
 
 // menu crud
