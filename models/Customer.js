@@ -9,6 +9,7 @@ const customerSchema = new mongoose.Schema({
     email: { type: String, required: true },
     mobile: { type: String, required: true },
 
+    resturant: { type: mongoose.Types.ObjectId, ref: "resturant", required: true },
     address: { type: String },
     city: { type: String },
     gender: { type: String, enum: ["male", "female"] },

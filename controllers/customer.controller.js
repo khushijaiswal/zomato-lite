@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler")
 const axios = require("axios")
 const { checkEmpty } = require("../utils/checkEmpty")
 const Customer = require("../models/Customer")
+const Resturant = require("../models/Resturant")
+const Menu = require("../models/Menu")
 
 exports.getLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body
@@ -14,11 +16,12 @@ exports.getLocation = asyncHandler(async (req, res) => {
 
     let str = ''
     let city = data.results[0].components.city
-    str += '' + data.results[0].components.road
-    str += '' + data.results[0].components.neighbourhood
-    str += '' + data.results[0].components.suburb
-    str += '' + data.results[0].components.postcode
-    console.log(data)
+    str += data.results[0].components.road
+    str += " " + data.results[0].components.neighbourhood
+    str += " " + data.results[0].components.suburb
+    str += " " + data.results[0].components.city
+    str += " " + data.results[0].components.postcode
+    console.log(data.results[0].components)
     res.json({
         message: "location fetch success", result: {
             address: str,
@@ -35,4 +38,16 @@ exports.updateCustomerInfo = asyncHandler(async (req, res) => {
     }
     const result = await Customer.findByIdAndUpdate(req.user, { address, city, gender, infoComplete: true }, { new: true })
     res.json({ message: "profile update success", result })
+})
+
+exports.getAllResturants = asyncHandler(async (req, res) => {
+    const result = await Resturant.find({ isActive: true }).select("-password -createdAt -updatedAt -__v -certificate -isActive -infoComplete")
+    res.json({ message: "All resturants fetch success", result })
+})
+
+
+// customer ko menu dikhege saare resturants k
+exports.getResturantMenu = asyncHandler(async (req, res) => {
+    const result = await Menu.find({ resturant: req.params.rid }).select("-updatedAt -createdAt -__v")
+    res.json({ message: "Menu fetch success", result })
 })

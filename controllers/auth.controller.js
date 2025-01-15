@@ -99,11 +99,11 @@ exports.loginCustomer = asyncHandler(async (req, res) => {
     const otp = generateOTP()
     await Customer.findByIdAndUpdate(result._id, { otp, otpSendOn: Date.now() })
     // await sendSMS({ number: result.mobile, message: `your otp is ${otp}` })
-    await sendEmail({
-        message: `<h1>Your OTP is ${otp}</h1>`,
-        subject: "verify otp to login",
-        to: result.email
-    })
+    // await sendEmail({
+    //     message: `<h1>Your OTP is ${otp}</h1>`,
+    //     subject: "verify otp to login",
+    //     to: result.email
+    // })
     res.json({ message: "otp send" })
 })
 

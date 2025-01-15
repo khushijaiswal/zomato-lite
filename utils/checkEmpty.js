@@ -5,7 +5,7 @@ exports.checkEmpty = (config) => {
     let isError = false
     const error = []
     for (const key in config) {
-        if (validator.isEmpty(config[key] ? config[key] : "")) {  // isEmpty(config.mobile)  isEmpty(config.adddress)
+        if (validator.isEmpty(config[key] ? toString(config[key]) : "")) {  // isEmpty(config.mobile)  isEmpty(config.adddress)
             isError = true
             error.push(`${key} is missing`)
         }
