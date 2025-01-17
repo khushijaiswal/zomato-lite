@@ -4,6 +4,7 @@ const { checkEmpty } = require("../utils/checkEmpty")
 const Customer = require("../models/Customer")
 const Resturant = require("../models/Resturant")
 const Menu = require("../models/Menu")
+const Order = require("../models/Order")
 
 exports.getLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body
@@ -50,4 +51,23 @@ exports.getAllResturants = asyncHandler(async (req, res) => {
 exports.getResturantMenu = asyncHandler(async (req, res) => {
     const result = await Menu.find({ resturant: req.params.rid }).select("-updatedAt -createdAt -__v")
     res.json({ message: "Menu fetch success", result })
+})
+
+
+exports.placeOrder = asyncHandler(async (req, res) => {
+    const { resturant, items } = req.body
+    const { error, isError } = checkEmpty({ resturant, items })
+    if (isError) {
+        return res.status(400).json({ message: "all fields required", error })
+    }
+    await Order.create({ resturant, items, customer: req.user })
+    res.json({ message: "Order place success" })
+})
+
+exports.getOrders = asyncHandler(async (req, res) => {
+
+    const result = await Order.find({ customer: req.user })
+        .populate("resturant", "name hero").select("-customer -createdAt -updatedAt -__v")
+        .populate("items.dish", "name type image price")
+    res.json({ message: "Order fetch success", result })
 })
