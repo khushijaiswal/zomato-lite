@@ -5,6 +5,7 @@ const { checkEmpty } = require("../utils/checkEmpty")
 const cloud = require("../utils/cloudinary")
 const Resturant = require("../models/Resturant")
 const Menu = require("../models/Menu")
+const Order = require("../models/Order")
 
 
 exports.updateInfo = asynchandler(async (req, res) => {
@@ -117,4 +118,18 @@ exports.updateMenu = asynchandler(async (req, res) => {
     })
 })
 
-// menu crud
+exports.getResturantOrders = asynchandler(async (req, res) => {
+
+    const result = await Order.find({ resturant: req.user })
+        .select("-resturant -createdAt -updatedAt -__v")
+        .populate("customer", "name hero address")
+        .populate("items.dish", "name type image price")
+        .sort({ createdAt: -1 })
+    res.json({ message: "menu update success", result })
+})
+
+exports.updateResturantStatus = asynchandler(async (req, res) => {
+
+    await Order.findByIdAndUpdate(req.params.oid, { status: req.body.status })
+    res.json({ message: "Order status change update success" })
+})
