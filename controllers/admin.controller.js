@@ -18,12 +18,13 @@ exports.getadminResturant = asyncHandler(async (req, res) => {
     res.json({ message: "get all resturant success", result })
 })
 
-exports.getadminOrder = asyncHandler(async (req, res) => {
-    const total = await Order.countDocuments()
+exports.getAdminOrder = asyncHandler(async (req, res) => {
     const { limit, skip } = req.query
-
-    const result = await Order.find()
-        .select(" -createdAt -updatedAt -__v -_id")
+    const total = await Order.countDocuments()
+    const result = await Order
+        .find()
+        .select(" -createdAt -updatedAt -__v ")
+        .populate("rider", "name mobile")
         .populate("resturant", "name email mobile")
         .populate("customer", "name email mobile")
         .populate("items.dish", "name type price")
@@ -32,7 +33,7 @@ exports.getadminOrder = asyncHandler(async (req, res) => {
         .skip(skip)
 
     res.json({
-        message: "get all order success", result: {
+        message: "order fetch success", result: {
             orders: result,
             total
         }
