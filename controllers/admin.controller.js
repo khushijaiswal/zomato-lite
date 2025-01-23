@@ -24,6 +24,7 @@ exports.getadminOrder = asyncHandler(async (req, res) => {
 
     const result = await Order.find()
         .select(" -createdAt -updatedAt -__v")
+        .populate("rider", "name mobile")
         .populate("resturant", "name email mobile")
         .populate("customer", "name email mobile")
         .populate("items.dish", "name type price")
