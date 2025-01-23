@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     resturant: { type: mongoose.Types.ObjectId, ref: "resturant", required: true },
     items: [{
         dish: { type: mongoose.Types.ObjectId, ref: "menu", required: true },
-        image: { type: mongoose.Types.ObjectId, ref: "menu", required: true },
+        // image: { type: mongoose.Types.ObjectId, ref: "menu", required: true },
         qty: { type: Number, required: true }
     }],
     rider: { type: mongoose.Types.ObjectId, ref: "rider" },

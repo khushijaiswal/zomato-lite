@@ -3,9 +3,10 @@ const mongoose = require("mongoose")
 require("dotenv").config()
 const cors = require("cors")
 const cookieParser = require("cookie-parser")
-const { resturantProtected, customertProtected } = require("./middlewares/protected")
+const { resturantProtected, customertProtected, adminProtected, riderProtected } = require("./middlewares/protected")
+const { app, httpServer } = require("./socket/socket")
 
-const app = express()
+// const app = express()
 
 app.use(express.json()) // req.body
 app.use(cookieParser()) // req.cookies
@@ -17,7 +18,8 @@ app.use(cors({
 app.use("/api/auth", require("./routes/auth.routes"))
 app.use("/api/resturant", resturantProtected, require("./routes/resturant.routes"))
 app.use("/api/customer", customertProtected, require("./routes/customer.route"))
-app.use("/api/admin", require("./routes/admin.routes"))
+app.use("/api/admin", adminProtected, require("./routes/admin.routes"))
+app.use("/api/rider", riderProtected, require("./routes/rider-route"))
 
 app.use("*", (req, res) => {
     res.status(404).json({ message: "resource not found" })
@@ -30,5 +32,5 @@ app.use((err, req, res, next) => {
 mongoose.connect(process.env.MONGO_URL)
 mongoose.connection.once("open", () => {
     console.log("db connected")
-    app.listen(process.env.PORT || 5000, console.log("server running"))
+    httpServer.listen(process.env.PORT || 5000, console.log("server running"))
 })

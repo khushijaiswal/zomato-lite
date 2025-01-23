@@ -1,4 +1,4 @@
-const { registerAdmin, loginAdmin, verifyAdminOTP, logoutAdmin, registerResturant, loginResturant, logoutResturant, registerCustomer, loginCustomer, logoutCustomer, verifyCustomerOTP } = require("../controllers/auth.controller")
+const { registerAdmin, loginAdmin, verifyAdminOTP, logoutAdmin, registerResturant, loginResturant, logoutResturant, registerCustomer, loginCustomer, logoutCustomer, verifyCustomerOTP, loginReider, logoutRider } = require("../controllers/auth.controller")
 
 const router = require("express").Router()
 
@@ -17,4 +17,7 @@ router
     .post("/verify-customer-otp", verifyCustomerOTP)
     .post("/login-customer", loginCustomer)
     .post("/logout-customer", logoutCustomer)
+
+    .post("/login-rider", loginReider)
+    .post("/logout-rider", logoutRider)
 module.exports = router
