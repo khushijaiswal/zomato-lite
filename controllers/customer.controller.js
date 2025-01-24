@@ -5,7 +5,7 @@ const Customer = require("../models/Customer")
 const Resturant = require("../models/Resturant")
 const Menu = require("../models/Menu")
 const Order = require("../models/Order")
-const io = require("../socket/socket")
+const { io } = require("../socket/socket")
 
 exports.getLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body
