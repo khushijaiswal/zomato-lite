@@ -6,6 +6,8 @@ const cloud = require("../utils/cloudinary")
 const Resturant = require("../models/Resturant")
 const Menu = require("../models/Menu")
 const Order = require("../models/Order")
+const { io } = require("../socket/socket")
+
 
 
 exports.updateInfo = asynchandler(async (req, res) => {
@@ -131,5 +133,6 @@ exports.getResturantOrders = asynchandler(async (req, res) => {
 exports.updateResturantStatus = asynchandler(async (req, res) => {
 
     await Order.findByIdAndUpdate(req.params.oid, { status: req.body.status })
+    io.emit("changed-order-status")
     res.json({ message: "Order status change update success" })
 })
