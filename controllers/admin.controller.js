@@ -139,10 +139,11 @@ exports.updateAdminRider = asyncHandler(async (req, res) => {
 
 exports.updateRiderAccount = asyncHandler(async (req, res) => {
     const { rid } = req.params
-    if (!req.body.isActive) {
+
+    const result = await Rider.findByIdAndUpdate(rid, { isActive: req.body.isActive }, { new: true })
+    if (!result.isActive) {
         io.emit("account-block")
     }
-    await Rider.findByIdAndUpdate(rid, { isActive: req.body.isActive })
     res.json({ message: "rider account uupdate success" })
 
 })
