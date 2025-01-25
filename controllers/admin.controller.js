@@ -87,51 +87,11 @@ exports.getAdminRider = asyncHandler(async (req, res) => {
         .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip)
+
     res.json({
         message: "rider fetch success", result: {
             rider: result,
             total
-        }
-    })
-})
-
-exports.updateRider = asyncHandler(async (req, res) => {
-    riderUpload(req, res, async (err) => {
-        if (err) {
-            console.log(err);
-            return res.status(400).json({ message: "unable to upload file" })
-        }
-
-        if (req.file) {
-            const licenceImage = {}
-            if (req.file && req.file.fieldname === 'licence') {
-                const result = await Rider.findById(req.params.rid);
-                if (result.licence) {
-                    await cloud.uploader.destroy(path.basename(result.licence, path.extname(result.licence)));
-                    const { secure_url } = await cloud.uploader.upload(req.file.path);
-                    licenceImage[key] = secure_url
-                }
-            }
-
-            const rcImage = {}
-            if (req.file && req.file.fieldname === 'rc') {
-                const result = await Rider.findById(req.params.rid);
-                if (result.rc) {
-                    await cloud.uploader.destroy(path.basename(result.rc, path.extname(result.rc)));
-                    const { secure_url } = await cloud.uploader.upload(req.file.path);
-                    rcImage[key] = secure_url
-                }
-            }
-            const updateData = {
-                ...req.body,
-                licence: licenceImage ? licenceImage : req.body.licence,
-                rc: rcImage ? rcImage : req.body.rc
-            }
-            await Rider.findByIdAndUpdate(req.params.rid, updateData)
-            res.json({ message: "rider update success" })
-        } else {
-            await Rider.findByIdAndUpdate(req.params.rid, { ...req.body })
-            res.json({ message: "rider update success" })
         }
     })
 })
@@ -179,12 +139,13 @@ exports.updateAdminRider = asyncHandler(async (req, res) => {
 
 exports.updateRiderAccount = asyncHandler(async (req, res) => {
     const { rid } = req.params
+    if (!req.body.isActive) {
+        io.emit("account-block")
+    }
     await Rider.findByIdAndUpdate(rid, { isActive: req.body.isActive })
     res.json({ message: "rider account uupdate success" })
 
 })
-
-
 
 exports.getAdminActiveRider = asyncHandler(async (req, res) => {
     const result = await Rider
@@ -192,6 +153,7 @@ exports.getAdminActiveRider = asyncHandler(async (req, res) => {
         .select("-password -createdAt -updatedAt -__v")
     res.json({ message: "rider fetch success", result })
 })
+
 exports.assignRider = asyncHandler(async (req, res) => {
     const { oid } = req.params
     await Order.findByIdAndUpdate(oid, { rider: req.body.rider })

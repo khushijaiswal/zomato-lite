@@ -47,13 +47,11 @@ exports.getAllResturants = asyncHandler(async (req, res) => {
     res.json({ message: "All resturants fetch success", result })
 })
 
-
 // customer ko menu dikhege saare resturants k
 exports.getResturantMenu = asyncHandler(async (req, res) => {
     const result = await Menu.find({ resturant: req.params.rid }).select("-updatedAt -createdAt -__v")
     res.json({ message: "Menu fetch success", result })
 })
-
 
 exports.placeOrder = asyncHandler(async (req, res) => {
     const { resturant, items } = req.body
@@ -76,7 +74,6 @@ exports.getOrders = asyncHandler(async (req, res) => {
         .sort({ createdAt: -1 })
     res.json({ message: "Order fetch success", result })
 })
-
 
 exports.getHistoryOrders = asyncHandler(async (req, res) => {
 

@@ -99,12 +99,6 @@ exports.loginCustomer = asyncHandler(async (req, res) => {
     // send OTP
     const otp = generateOTP()
     await Customer.findByIdAndUpdate(result._id, { otp, otpSendOn: Date.now() })
-    // await sendSMS({ number: result.mobile, message: `your otp is ${otp}` })
-    // await sendEmail({
-    //     message: `<h1>Your OTP is ${otp}</h1>`,
-    //     subject: "verify otp to login",
-    //     to: result.email
-    // })
     res.json({ message: "otp send" })
 })
 
@@ -143,12 +137,10 @@ exports.verifyCustomerOTP = asyncHandler(async (req, res) => {
     })
 })
 
-
 exports.logoutCustomer = asyncHandler(async (req, res) => {
     res.clearCookie("zomato-customer")
     res.json({ message: "logout customer success" })
 })
-
 
 // resturant register
 // resturant login
@@ -220,9 +212,7 @@ exports.logoutResturant = async (req, res) => {
 // customer login
 // customer logout
 
-
 // rider login
-
 
 exports.loginReider = async (req, res) => {
     const { userName, password } = req.body
